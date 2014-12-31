@@ -21,13 +21,22 @@ class GA{
     };
 
     private:
-        std::vector<Jedinka> populacija;
+        std::vector<Jedinka> population;
+        char filename[256];
+        int population_size;
+        double mutation_prob;
+        int elimination_size;
+        int iterations;
 
-    public:
         // selekcija
-
+        // mutacija
         // krizanje
 
-        // mutacija
+    public:
+        GA();
 
+        GA(char* _filename, int _population_size, double _mutation_prob,
+           int _elimination_size, int _iterations);
+
+        int run();
 };

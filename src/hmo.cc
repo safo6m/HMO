@@ -14,11 +14,11 @@ using namespace std;
  *  broj iteracija GA               = -i ili --iterations
  */
 
-char filename[256]  = "input.in";
-int population      = 100;
-double mutation     = 0.25;
-int elimination     = 25;
-int iterations      = 10000;
+char filename[256]  = FILENAME;
+int population      = POPULATION;
+double mutation     = MUTATION;
+int elimination     = ELIMINATION;
+int iterations      = ITERATIONS;
 
 int parse_arguments(int *argc, char*** argv) {
     int c, option_index;
@@ -76,6 +76,12 @@ int main(int argc, char** argv) {
     printf("\tnumber of iterations = %d\n", iterations);
 
     /* run GA */
+    unique_ptr<GA> solution(new GA(filename, population, mutation, elimination, iterations));
+
+    if(solution->run()) {
+        puts("Error while running GA!");
+        return 1;
+    }
 
     return 0;
 }

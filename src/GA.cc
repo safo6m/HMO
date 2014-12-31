@@ -32,3 +32,20 @@ bool GA::Jedinka::operator ==(const Jedinka &a) {
     }
     return true;
 }
+
+GA::GA() {
+}
+
+GA::GA(char* _filename, int _population_size, double _mutation_prob,
+        int _elimination_size, int _iterations) {
+    strcpy(filename, _filename);
+    population_size = _population_size;
+    mutation_prob = _mutation_prob;
+    elimination_size = _elimination_size;
+    iterations = _iterations;
+}
+
+int GA::run() {
+    return 1;
+}
+

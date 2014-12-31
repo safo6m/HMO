@@ -11,3 +11,9 @@
 #define NUM_USER        100
 #define VEH_CAPACITY    70
 #define VEH_COST        1000
+
+#define FILENAME        "input.in"
+#define POPULATION      100
+#define MUTATION        0.25
+#define ELIMINATION     25
+#define ITERATIONS      10000
