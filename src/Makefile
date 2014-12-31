@@ -7,7 +7,7 @@ LIBS =
 all: hmo
 
 hmo: $(OBJ)
-	$(CC) -o $@ $^ $(CFLAGS) $(LIBS)
+	$(CC) -o ../bin/$@ $^ $(CFLAGS) $(LIBS)
 
 %.o: %.cpp $(DEPS)
 	$(CC) $(CFLAGS) -c -o $@ $< 
@@ -15,4 +15,4 @@ hmo: $(OBJ)
 .PHONY: clean all
 
 clean:
-	rm -f *.o *~ hmo
+	rm -f *.o *~ ../bin/hmo
