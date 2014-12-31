@@ -16,6 +16,8 @@ class GA{
 
             void setFitness(const int &_fitness);
             void setWarehouseUser(const int &warehouse, const int &user);
+
+            bool operator ==(const Jedinka &a);
     };
 
     private:
