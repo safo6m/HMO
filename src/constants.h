@@ -14,6 +14,6 @@
 
 #define FILENAME        "input.in"
 #define POPULATION      100
-#define MUTATION        0.25
+#define MUTATION        25
 #define ELIMINATION     25
 #define ITERATIONS      10000

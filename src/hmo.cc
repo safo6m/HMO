@@ -16,7 +16,7 @@ using namespace std;
 
 char filename[256]  = FILENAME;
 int population      = POPULATION;
-double mutation     = MUTATION;
+int mutation        = MUTATION;
 int elimination     = ELIMINATION;
 int iterations      = ITERATIONS;
 
@@ -44,7 +44,7 @@ int parse_arguments(int *argc, char*** argv) {
                 sscanf(optarg, "%d", &population);
                 break;
             case 'p':
-                sscanf(optarg, "%lf", &mutation);
+                sscanf(optarg, "%d", &mutation);
                 break;
             case 'm':
                 sscanf(optarg, "%d", &elimination);
@@ -71,7 +71,7 @@ int main(int argc, char** argv) {
     printf("GA parameters:\n");
     printf("\tinput file = %s\n", filename);
     printf("\tpopulation size = %d\n", population);
-    printf("\tmutation probability = %.3lf\n", mutation);
+    printf("\tmutation probability = %.3lf\n", mutation / 100.);
     printf("\telimination size = %d\n", elimination);
     printf("\tnumber of iterations = %d\n", iterations);
 
