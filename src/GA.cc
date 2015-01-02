@@ -1,7 +1,10 @@
 #include "GA.h"
+#include "Data.h"
 
+#include <cstdio>
 #include <cstdlib>
 #include <ctime>
+#include <vector>
 
 using namespace std;
 
@@ -53,14 +56,70 @@ GA::GA(char* _filename, int _population_size, int _mutation_prob,
 }
 
 int GA::run() {
+    int num_user, num_warehouse;
+    int x, y;
+    int warehouse_capacity, vehicle_capacity, user_capacity;
+    int warehouse_cost, vehicle_cost;
+
+    vector<Warehouse> w;
+    vector<User> u;
+
+    printf("Reading %s file...", filename);
+
+    // procitaj ulaznu datoteku
+    FILE *f = fopen(filename, "r");
+    fscanf(f, "%d", &num_user);
+    fscanf(f, "%d", &num_warehouse);
+
+    w.resize(num_warehouse);
+    u.resize(num_user);
+
+    for (int i = 0; i < num_warehouse; ++i) {
+        fscanf(f, "%d%d", &x, &y);
+        w[i] = Warehouse(i, x, y);
+    }
+
+    for (int i = 0; i < num_user; ++i) {
+        fscanf(f, "%d%d", &x, &y);
+        u[i] = User(i, x, y);
+    }
+
+    fscanf(f, "%d", &vehicle_capacity);
+
+    for (int i = 0; i < num_warehouse; ++i) {
+        fscanf(f, "%d", &warehouse_capacity);
+        w[i].setCapacity(warehouse_capacity);
+    }
+
+    for (int i = 0; i < num_user; ++i) {
+        fscanf(f, "%d", &user_capacity);
+        u[i].setCapacity(user_capacity);
+    }
+
+    for (int i = 0; i < num_warehouse; ++i) {
+        fscanf(f, "%d", &warehouse_cost);
+        w[i].setCost(warehouse_cost);
+    }
+
+    fscanf(f, "%d", &vehicle_cost);
+    fclose(f);
+    printf(" done\n");
+
     srand(time(NULL));
 
+    printf("Generating starting populations...");
     // generiraj pocetnu populaciju
+    printf(" done\n");
+
+    printf("Starting GA.\n");
     for (int ITER = 0; ITER < this->iterations; ++ITER) {
+
         for (int ELIM = 0; ELIM < this->elimination_size; ++ELIM) {
             selekcija();
         }
     }
+
+    printf("Exiting GA.\n");
     return 0;
 }
 

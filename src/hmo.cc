@@ -2,6 +2,7 @@
 #include <getopt.h>
 
 #include "GA.h"
+#include "Data.h"
 
 using namespace std;
 

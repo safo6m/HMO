@@ -26,7 +26,7 @@ class GA{
         std::vector<Jedinka> population;
         char filename[256];
         int population_size;
-        int  mutation_prob;
+        int mutation_prob;
         int elimination_size;
         int iterations;
 

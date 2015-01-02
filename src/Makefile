@@ -1,7 +1,7 @@
 CC = g++
 CFLAGS = --std=gnu++11 -Wall -g
-DEPS = GA.h
-OBJ = hmo.cc GA.cc
+DEPS = GA.h Data.h
+OBJ = hmo.cc GA.cc Data.cc
 LIBS =
 
 all: hmo
