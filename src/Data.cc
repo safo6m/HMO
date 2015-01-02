@@ -48,6 +48,18 @@ int User::getID(void) const {
     return id;
 }
 
+bool User::operator <(const User &a) const {
+    if (getX() == a.getX()) {
+        return getY() < a.getY();
+    } else {
+        return getX() < a.getX();
+    }
+}
+
+bool User::operator ==(const User &a) const {
+    return !((*this < a) || (a < *this));
+}
+
 Warehouse::Warehouse() {
 }
 

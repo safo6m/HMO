@@ -2,20 +2,21 @@
 
 #include <vector>
 
-#include "constants.h"
+#include "Data.h"
+#include "Constants.h"
 
 class GA{
     class Jedinka {
         private:
-            std::vector<int> skladiste[NUM_WAREHOUSE];
+            std::vector<User> skladiste[NUM_WAREHOUSE];
             int fitness;
 
         public:
             int getFitness(void) const;
-            std::vector<int> getWarehouseUsers(const int &warehouse) const;
+            std::vector<User> getWarehouseUsers(const int &warehouse) const;
 
             void setFitness(const int &_fitness);
-            void setWarehouseUser(const int &warehouse, const int &user);
+            void setWarehouseUser(const int &warehouse, const User &user);
 
             void updateFitness(void);
 

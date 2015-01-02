@@ -26,6 +26,9 @@ class User : public Point {
         User(int _id, int _x, int _y);
 
         int getID(void) const;
+
+        bool operator <(const User &a) const;
+        bool operator ==(const User &a) const;
 };
 
 class Warehouse : public Point {

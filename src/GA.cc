@@ -1,5 +1,4 @@
 #include "GA.h"
-#include "Data.h"
 
 #include <cstdio>
 #include <cstdlib>
@@ -16,7 +15,7 @@ int GA::Jedinka::getFitness(void) const {
     return fitness;
 }
 
-vector<int> GA::Jedinka::getWarehouseUsers(const int &warehouse) const {
+vector<User> GA::Jedinka::getWarehouseUsers(const int &warehouse) const {
     return skladiste[warehouse];
 }
 
@@ -24,7 +23,7 @@ void GA::Jedinka::setFitness(const int &_fitness) {
     fitness = _fitness;
 }
 
-void GA::Jedinka::setWarehouseUser(const int &warehouse, const int &user) {
+void GA::Jedinka::setWarehouseUser(const int &warehouse, const User &user) {
     skladiste[warehouse].push_back(user);
     // keep them sorted for comparison
     sort(skladiste[warehouse].begin(), skladiste[warehouse].end());
@@ -124,7 +123,7 @@ int GA::run() {
 }
 
 void GA::selekcija(void) {
-    // troturniska selekcija
+    // troturnirska selekcija
     return;
 }
 
