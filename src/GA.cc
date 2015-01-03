@@ -131,10 +131,7 @@ int GA::run() {
 
     printf("Starting GA.\n");
     for (int ITER = 0; ITER < this->iterations; ++ITER) {
-
-        for (int ELIM = 0; ELIM < this->elimination_size; ++ELIM) {
             selekcija();
-        }
     }
 
     printf("Extracting best unit from population.\n");
@@ -153,6 +150,22 @@ int GA::run() {
 
 void GA::selekcija(void) {
     // troturnirska selekcija
+    vector<Jedinka> next_population = this->population;
+
+    for (int i = 0; i < ELIMINATION; ++i) {
+        int a = Rand(1, population_size) - 1;
+        int b = Rand(1, population_size) - 1;
+
+        Jedinka child = krizanje(this->population[a], this->population[b]);
+
+        if (this->population[a].getFitness() < this->population[b].getFitness()) {
+            next_population[a] = child;
+        } else {
+            next_population[b] = child;
+        }
+    }
+
+    this->population = next_population;
     return;
 }
 
@@ -226,6 +239,10 @@ GA::Jedinka GA::mutacija(const Jedinka &a) {
 
     int x = Rand(1, NUM_WAREHOUSE) - 1;
     vector<User> skladiste_x = a.getWarehouseUsers(x);
+
+    if (skladiste_x.size() == 0) {
+        return a;
+    }
 
     int z = Rand(0, skladiste_x.size() - 1);
 
