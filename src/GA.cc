@@ -67,7 +67,7 @@ int GA::run() {
     vector<Warehouse> w;
     vector<User> u;
 
-    printf("Reading %s file...", filename);
+    fprintf(stderr, "Reading %s file...", filename);
 
     // procitaj ulaznu datoteku
     FILE *f = fopen(filename, "r");
@@ -112,11 +112,11 @@ int GA::run() {
     this->vehicle_cost = vehicle_cost;
 
     fclose(f);
-    printf(" done\n");
+    fprintf(stderr, " done\n");
 
     srand(time(NULL));
 
-    printf("Generating starting populations...");
+    fprintf(stderr, "Generating starting populations...");
 
     for (int i = 0; i < this->population_size; ++i) {
         Jedinka curr;
@@ -145,15 +145,15 @@ int GA::run() {
         this->population.push_back(curr);
     }
 
-    printf(" done\n");
+    fprintf(stderr, " done\n");
 
-    printf("Starting GA.\n");
+    fprintf(stderr, "Starting GA.\n");
     for (int ITER = 0; ITER < this->iterations; ++ITER) {
-        if (ITER % 1000 == 0) printf("%d\n", ITER);
+        if (ITER % 1000 == 0) fprintf(stderr, "%d\n", ITER);
         selekcija();
     }
 
-    printf("Extracting best unit from population.\n");
+    fprintf(stderr, "Extracting best unit from population.\n");
     Jedinka best = this->population[0];
     for (int i = 1; i < population_size; ++i) {
         if (this->population[i].getFitness() < best.getFitness()) {
@@ -161,7 +161,7 @@ int GA::run() {
         }
     }
 
-    printf("Solution found: %d\n", best.getFitness());
+    fprintf(stderr, "Solution found: %d\n", best.getFitness());
 
     vector< pair<int, vector<vector<User> > > > solution;
     int cnt = 0;
@@ -196,9 +196,9 @@ int GA::run() {
         }
     }
 
-    printf("%d\n", best.getFitness());
+    printf("\n%d\n", best.getFitness());
 
-    printf("Exiting GA.\n");
+    fprintf(stderr, "Exiting GA.\n");
     return 0;
 }
 

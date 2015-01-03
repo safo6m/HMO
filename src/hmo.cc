@@ -68,12 +68,12 @@ int main(int argc, char** argv) {
     }
 
     /* Print GA parameters */
-    printf("GA parameters:\n");
-    printf("\tinput file = %s\n", filename);
-    printf("\tpopulation size = %d\n", population);
-    printf("\tmutation probability = %.3lf\n", mutation / 100.);
-    printf("\telimination size = %d\n", elimination);
-    printf("\tnumber of iterations = %d\n", iterations);
+    fprintf(stderr, "GA parameters:\n");
+    fprintf(stderr, "\tinput file = %s\n", filename);
+    fprintf(stderr, "\tpopulation size = %d\n", population);
+    fprintf(stderr, "\tmutation probability = %.3lf\n", mutation / 100.);
+    fprintf(stderr, "\telimination size = %d\n", elimination);
+    fprintf(stderr, "\tnumber of iterations = %d\n", iterations);
 
     /* run GA */
     unique_ptr<GA> solution(new GA(filename, population, mutation, elimination, iterations));
