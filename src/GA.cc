@@ -4,6 +4,7 @@
 #include <cstdlib>
 #include <ctime>
 #include <vector>
+#include <set>
 
 #include "FirstFit.h"
 #include "Bitonic.h"
@@ -125,7 +126,7 @@ int GA::run() {
             vector<User> skladiste;
 
             while (1) {
-                warehouse = Rand(1, num_warehouse) - 1;
+                warehouse = Rand(1, NUM_WAREHOUSE) - 1;
                 skladiste = curr.getWarehouseUsers(warehouse);
                 capacity = this->warehouses[warehouse].getCapacity();
 
@@ -172,7 +173,7 @@ int GA::run() {
         cnt += curr.size();
     }
 
-    printf("%d\n\n", (int)solution.size());
+    printf("%d\n\n", cnt);
 
     for (int i = 0; i < solution.size(); ++i) {
         int warehouse_id = solution[i].first;
@@ -225,6 +226,8 @@ GA::Jedinka GA::krizanje(const Jedinka &a, const Jedinka &b) {
     int y = Rand(1, NUM_WAREHOUSE) - 1;
     if (y < x) swap(x, y);
 
+    set<int> flag;
+
     for (int i = 0; i < NUM_WAREHOUSE; ++i) {
         vector<User> skladiste;
 
@@ -235,7 +238,35 @@ GA::Jedinka GA::krizanje(const Jedinka &a, const Jedinka &b) {
         }
 
         for (int j = 0; j < skladiste.size(); ++j) {
-            child.setWarehouseUser(i, skladiste[j]);
+            if (flag.find(skladiste[j].getID()) == flag.end()) {
+                child.setWarehouseUser(i, skladiste[j]);
+                flag.insert(skladiste[j].getID());
+            }
+        }
+    }
+
+    // rasporedi preostale
+    for (int j = 0; j < this->users.size(); ++j) {
+        if (flag.find(j) != flag.end()) {
+            continue;
+        }
+
+        int warehouse, capacity;
+        vector<User> skladiste;
+
+        while (1) {
+            warehouse = Rand(1, this->warehouses.size()) - 1;
+            skladiste = child.getWarehouseUsers(warehouse);
+            capacity = this->warehouses[warehouse].getCapacity();
+
+            for (int k = 0; k < skladiste.size(); ++k) {
+                capacity -= skladiste[k].getCapacity();
+            }
+
+            if (capacity >= this->users[j].getCapacity()) {
+                child.setWarehouseUser(warehouse, this->users[j]);
+                break;
+            }
         }
     }
 
