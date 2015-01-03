@@ -62,7 +62,6 @@ int GA::run() {
     int x, y;
     int warehouse_capacity, vehicle_capacity, user_capacity;
     int warehouse_cost, vehicle_cost;
-    int flag[NUM_USER];
 
     vector<Warehouse> w;
     vector<User> u;
@@ -121,7 +120,25 @@ int GA::run() {
     for (int i = 0; i < this->population_size; ++i) {
         Jedinka curr;
 
-        // TODO
+        for (int j = 0; j < num_user; ++j) {
+            int warehouse, capacity;
+            vector<User> skladiste;
+
+            while (1) {
+                warehouse = Rand(1, num_warehouse) - 1;
+                skladiste = curr.getWarehouseUsers(warehouse);
+                capacity = this->warehouses[warehouse].getCapacity();
+
+                for (int k = 0; k < skladiste.size(); ++k) {
+                    capacity -= skladiste[k].getCapacity();
+                }
+
+                if (capacity >= this->users[j].getCapacity()) {
+                    curr.setWarehouseUser(warehouse, this->users[j]);
+                    break;
+                }
+            }
+        }
 
         curr.updateFitness(this->warehouses, this->vehicle_capacity, this->vehicle_cost);
         this->population.push_back(curr);
@@ -131,7 +148,8 @@ int GA::run() {
 
     printf("Starting GA.\n");
     for (int ITER = 0; ITER < this->iterations; ++ITER) {
-            selekcija();
+        if (ITER % 1000 == 0) printf("%d\n", ITER);
+        selekcija();
     }
 
     printf("Extracting best unit from population.\n");
