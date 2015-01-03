@@ -163,10 +163,56 @@ GA::Jedinka GA::krizanje(const Jedinka &a, const Jedinka &b) {
      * a od B[X, Y] s time da svi korisnici kaj su vec u B[X, Y] ne uzimamo iz
      * A[0, X] U A[Y, kraja] (ili obratno)
      */
+    int x = Rand(1, NUM_WAREHOUSE) - 1;
+    int y = Rand(1, NUM_WAREHOUSE) - 1;
+    if (y < x) swap(x, y);
 
+    for (int i = 0; i < NUM_WAREHOUSE; ++i) {
+        vector<User> skladiste;
+
+        if (i <= x || i >= y) {
+            skladiste = a.getWarehouseUsers(i);
+        } else {
+            skladiste = b.getWarehouseUsers(i);
+        }
+
+        for (int j = 0; j < skladiste.size(); ++j) {
+            child.setWarehouseUser(i, skladiste[j]);
+        }
+    }
+
+    // ako nije dobra -> vrati bolju ili pokusaj opet
+    bool fits = true;
+    for (int i = 0; i < NUM_WAREHOUSE; ++i) {
+        vector<User> skladiste = child.getWarehouseUsers(i);
+        int need = 0;
+        for (int j = 0; j < skladiste.size(); ++j) {
+            need += skladiste[j].getCapacity();
+        }
+
+        if (need > this->warehouses[i].getCapacity()) {
+            fits = false;
+            break;
+        }
+    }
+
+    if (fits == false) {
+        if (Rand(0, 1) == 0) {
+            if (a.getFitness() < b.getFitness()) {
+                child = a;
+            } else {
+                child = b;
+            }
+        } else {
+            child = krizanje(a, b);
+        }
+    }
+
+    // mutacija
     if (Rand(0, 100) < this->mutation_prob) {
         return mutacija(child);
     } else {
+        child.updateFitness(this->warehouses, this->vehicle_capacity, this->vehicle_cost);
         return child;
     }
 }
@@ -177,6 +223,42 @@ GA::Jedinka GA::mutacija(const Jedinka &a) {
      * (random odabrani X, Y, Z) stavi korsnika Z iz skladista X u skladiste Y
      * (ako time ne narusavamo dostupan kapacitet)
      */
+
+    int x = Rand(1, NUM_WAREHOUSE) - 1;
+    vector<User> skladiste_x = a.getWarehouseUsers(x);
+
+    int z = Rand(0, skladiste_x.size() - 1);
+
+    int y;
+    while (1) {
+        y = Rand(1, NUM_WAREHOUSE) - 1;
+        vector<User> skladiste_y = a.getWarehouseUsers(y);
+
+        int need = 0;
+        for (int j = 0; j < skladiste_y.size(); ++j) {
+            need += skladiste_y[j].getCapacity();
+        }
+
+        need += skladiste_x[z].getCapacity();
+
+        if (need <= this->warehouses[y].getCapacity()) {
+            break;
+        }
+    }
+
+    for (int i = 0; i < NUM_WAREHOUSE; ++i) {
+        vector<User> skladiste = a.getWarehouseUsers(i);
+
+        for (int j = 0; j < skladiste.size(); ++j) {
+            if (i != x || j != z) {
+                mut.setWarehouseUser(i, skladiste[j]);
+            }
+        }
+    }
+
+    mut.setWarehouseUser(y, skladiste_x[z]);
+
+    mut.updateFitness(this->warehouses, this->vehicle_capacity, this->vehicle_cost);
     return mut;
 }
 
