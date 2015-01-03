@@ -144,6 +144,33 @@ int GA::run() {
 
     printf("Solution found: %d\n", best.getFitness());
 
+    vector< pair<int, vector<vector<User> > > > solution;
+    int cnt = 0;
+
+    for (int i = 0; i < NUM_WAREHOUSE; ++i) {
+        vector<User> skladiste = best.getWarehouseUsers(i);
+        vector<vector<User> > curr = first_fit(skladiste, vehicle_capacity);
+        solution.push_back(make_pair(i, curr));
+        cnt += curr.size();
+    }
+
+    printf("%d\n\n", (int)solution.size());
+
+    for (int i = 0; i < solution.size(); ++i) {
+        int warehouse_id = solution[i].first;
+        vector<vector<User> > tours = solution[i].second;
+
+        for (int j = 0; j < tours.size(); ++j) {
+            printf("%d: ", warehouse_id);
+            for (int k = 0; k < tours[j].size(); ++k) {
+                printf(" %d", tours[j][k].getID());
+            }
+            printf("\n\n");
+        }
+    }
+
+    printf("%d\n", best.getFitness());
+
     printf("Exiting GA.\n");
     return 0;
 }
