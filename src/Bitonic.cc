@@ -10,11 +10,11 @@
 
 using namespace std;
 
-int bitonic_tour(vector<User> users, Warehouse w) {
+vector<User> bitonic_tour(vector<User> users, Warehouse w) {
     // insert warehouse
     users.push_back(User(-1, w.getX(), w.getY()));
 
-    int res = 0;
+    vector<User> res;
     int n = users.size();
 
     int l[NUM_USER + 10][NUM_USER + 10];
@@ -65,20 +65,25 @@ int bitonic_tour(vector<User> users, Warehouse w) {
         S[1].pop();
     }
 
-    int first, prev;
     for (int i = 0; i < n; ++i) {
         int id = S[0].top();
         S[0].pop();
 
-        if (i == 0) {
-            first = id;
-        } else {
-            res += users[id].getDistance(users[prev]);
-        }
-
-        prev = id;
+        res.push_back(users[id]);
     }
-    res += users[first].getDistance(users[prev]);
 
     return res;
 }
+
+int bitonic_tour_cost(vector<User> users) {
+    int res = 0;
+    int n = users.size();
+
+    for (int i = 1; i < n; ++i) {
+        res += users[i].getDistance(users[i - 1]);
+    }
+    res += users[n - 1].getDistance(users[0]);
+
+    return res;
+}
+

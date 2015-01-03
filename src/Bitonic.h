@@ -3,4 +3,6 @@
 #include "Data.h"
 #include <vector>
 
-int bitonic_tour(std::vector<User> users, Warehouse w);
+std::vector<User> bitonic_tour(std::vector<User> users, Warehouse w);
+
+int bitonic_tour_cost(std::vector<User> users);
