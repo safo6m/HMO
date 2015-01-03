@@ -1,7 +1,7 @@
 CC = g++
 CFLAGS = --std=gnu++11 -Wall -g
-DEPS = GA.h Data.h Bitonic.h Constants.h
-OBJ = hmo.cc GA.cc Data.cc Bitonic.cc
+DEPS = GA.h Data.h Bitonic.h FirstFit.h Constants.h
+OBJ = hmo.cc GA.cc Data.cc Bitonic.cc FirstFit.cc
 LIBS =
 
 all: hmo

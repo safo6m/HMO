@@ -1,13 +1,11 @@
 /*
- * Ulaz = vector<User> skladiste -> niz indeksa koji oznacavjau koji korisnici
- *        pripadaju nekom skladistu
+ * Ulaz = vector<User> skladiste, skladiste
  *
  * Izlaz = cijena BITONIC ture
  */
 #include "Bitonic.h"
 #include "Constants.h"
 
-#include <vector>
 #include <stack>
 
 using namespace std;

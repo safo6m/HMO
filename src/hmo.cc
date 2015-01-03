@@ -2,6 +2,7 @@
 #include <getopt.h>
 
 #include "GA.h"
+#include "FirstFit.h"
 
 using namespace std;
 
