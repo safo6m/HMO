@@ -18,18 +18,23 @@ class GA{
             void setFitness(const int &_fitness);
             void setWarehouseUser(const int &warehouse, const User &user);
 
-            void updateFitness(void);
+            void updateFitness(const std::vector<Warehouse> &w, int capacity, int cost);
 
             bool operator ==(const Jedinka &a);
     };
 
     private:
         std::vector<Jedinka> population;
+        std::vector<User> users;
+        std::vector<Warehouse> warehouses;
+
         char filename[256];
         int population_size;
         int mutation_prob;
         int elimination_size;
         int iterations;
+        int vehicle_capacity;
+        int vehicle_cost;
 
         // selekcija
         void selekcija(void);

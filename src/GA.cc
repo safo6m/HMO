@@ -5,6 +5,9 @@
 #include <ctime>
 #include <vector>
 
+#include "FirstFit.h"
+#include "Bitonic.h"
+
 using namespace std;
 
 static int Rand(int lo, int hi) {
@@ -59,6 +62,7 @@ int GA::run() {
     int x, y;
     int warehouse_capacity, vehicle_capacity, user_capacity;
     int warehouse_cost, vehicle_cost;
+    int flag[NUM_USER];
 
     vector<Warehouse> w;
     vector<User> u;
@@ -84,6 +88,7 @@ int GA::run() {
     }
 
     fscanf(f, "%d", &vehicle_capacity);
+    this->vehicle_capacity = vehicle_capacity;
 
     for (int i = 0; i < num_warehouse; ++i) {
         fscanf(f, "%d", &warehouse_capacity);
@@ -100,14 +105,28 @@ int GA::run() {
         w[i].setCost(warehouse_cost);
     }
 
+    this->users = u;
+    this->warehouses = w;
+
     fscanf(f, "%d", &vehicle_cost);
+    this->vehicle_cost = vehicle_cost;
+
     fclose(f);
     printf(" done\n");
 
     srand(time(NULL));
 
     printf("Generating starting populations...");
-    // generiraj pocetnu populaciju
+
+    for (int i = 0; i < this->population_size; ++i) {
+        Jedinka curr;
+
+        // TODO
+
+        curr.updateFitness(this->warehouses, this->vehicle_capacity, this->vehicle_cost);
+        this->population.push_back(curr);
+    }
+
     printf(" done\n");
 
     printf("Starting GA.\n");
@@ -117,6 +136,16 @@ int GA::run() {
             selekcija();
         }
     }
+
+    printf("Extracting best unit from population.\n");
+    Jedinka best = this->population[0];
+    for (int i = 1; i < population_size; ++i) {
+        if (this->population[i].getFitness() < best.getFitness()) {
+            best = this->population[i];
+        }
+    }
+
+    printf("Solution found: %d\n", best.getFitness());
 
     printf("Exiting GA.\n");
     return 0;
@@ -151,7 +180,7 @@ GA::Jedinka GA::mutacija(const Jedinka &a) {
     return mut;
 }
 
-void GA::Jedinka::updateFitness(void) {
+void GA::Jedinka::updateFitness(const vector<Warehouse> &w, int capacity, int cost) {
     /*
      * auti = bin packing racunamo First Fit Decreasing, more se napisati u O(n
      * log n) ali kak nam bude TSP O(n^2) moremo i to O(n^2)
@@ -161,5 +190,19 @@ void GA::Jedinka::updateFitness(void) {
      * fitness = sva skladista koja imaju korisnike * njihova cijena
      * + auti * cijena + put
      */
+    int res = 0;
+    for (int i = 0; i < NUM_WAREHOUSE; ++i) {
+        if (skladiste[i].size() > 0) {
+            vector<vector<User> > tours = first_fit(skladiste[i], capacity);
+
+            for (int j = 0; j < tours.size(); ++j) {
+                res += cost;
+                res += bitonic_tour(tours[j], w[i]);
+            }
+            res += w[i].getCost();
+        }
+    }
+
+    this->fitness = res;
     return;
 }
