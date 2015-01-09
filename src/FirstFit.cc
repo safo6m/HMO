@@ -5,6 +5,8 @@
  */
 #include "FirstFit.h"
 
+#include <set>
+
 using namespace std;
 
 inline bool cmp(const User &a, const User &b) {
@@ -34,6 +36,58 @@ vector<vector<User> > first_fit(vector<User> users, int capacity) {
             *it += users[i].getCapacity();
         }
         ret[bin].push_back(users[i]);
+    }
+
+    return ret;
+}
+
+vector< vector<User> > dist_fit(vector<User> users, int capacity) {
+    vector< vector<User> > ret;
+    set<int> FLAG;
+
+    while (1) {
+        vector< User > bin;
+        int cap = capacity;
+        int curr;
+        for (curr = 0; curr < users.size(); ++curr) {
+		if (FLAG.find(curr) == FLAG.end()) {
+			break;
+		}
+	}
+
+        if (curr >= users.size()) break;
+
+        FLAG.insert(curr);
+
+        bin.push_back(users[curr]);
+
+        while (1) {
+            int best_dist, best_id = -1;
+            int dist;
+
+            for (auto it = bin.begin(); it != bin.end(); ++it) {
+                for (int i = 0; i < users.size(); ++i) {
+                    if (FLAG.find(i) != FLAG.end()) continue;
+                    if (cap < users[i].getCapacity()) continue;
+
+                    dist = users[i].getDistance(*it);
+                    if (best_id == -1 || dist < best_dist) {
+                        best_id = i;
+                        best_dist = dist;
+                    }
+                }
+            }
+
+            if (best_id != -1) {
+                cap -= users[best_id].getCapacity();
+                bin.push_back(users[best_id]);
+                FLAG.insert(best_id);
+            } else {
+                break;
+            }
+        }
+
+        ret.push_back(bin);
     }
 
     return ret;
