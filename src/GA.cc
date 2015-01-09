@@ -146,7 +146,7 @@ int GA::run() {
 					}
 				}
 
-				int rand_x = Rand(1, warehouse_upper_bounds[NUM_WAREHOUSE-1]) - 1;
+				int rand_x = Rand(1, warehouse_upper_bounds[NUM_WAREHOUSE-1] + 1) - 1;
 
 				warehouse = 0;
 				while(rand_x > warehouse_upper_bounds[warehouse]){
