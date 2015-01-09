@@ -125,8 +125,35 @@ int GA::run() {
 			int warehouse, capacity;
 			vector<User> skladiste;
 
+			//pomocna varijabla
+			User curr_user = this->users[j];
+
+			int warehouse_dist[NUM_WAREHOUSE]; // udaljenost korisnika od svakog skladista
+			int total_dist = 0; // ukupna udaljlenost
+			for (int k = 0; k < NUM_WAREHOUSE; k++){
+				warehouse_dist[k] = curr_user.getDistance(this->warehouses[k]);
+				total_dist += warehouse_dist[k];
+			}
+
+			int warehouse_upper_bounds[NUM_WAREHOUSE]; //gornje granice intervala za rand broj
+
 			while (1) {
-				warehouse = Rand(1, this->warehouses.size()) - 1;
+				// izracunaj gornje granice intervala, donja granica[i] = gg[i-1]
+				for (int k = 0; k < NUM_WAREHOUSE; k++){
+					warehouse_upper_bounds[k] = ((total_dist - warehouse_dist[k]) * 1000) / total_dist;
+					if (k > 0){
+						warehouse_upper_bounds[k] += warehouse_upper_bounds[k-1];
+					}
+				}
+
+				int rand_x = Rand(1, warehouse_upper_bounds[NUM_WAREHOUSE-1]) - 1;
+
+				warehouse = 0;
+				while(rand_x > warehouse_upper_bounds[warehouse]){
+					warehouse++;
+				}
+
+				// warehouse = Rand(1, this->warehouses.size()) - 1;
 				skladiste = curr.getWarehouseUsers(warehouse);
 				capacity = this->warehouses[warehouse].getCapacity();
 
@@ -134,9 +161,12 @@ int GA::run() {
 					capacity -= skladiste[k].getCapacity();
 				}
 
-				if (capacity >= this->users[j].getCapacity()) {
-					curr.setWarehouseUser(warehouse, this->users[j]);
+				if (capacity >= curr_user.getCapacity()) {
+					curr.setWarehouseUser(warehouse, curr_user);
 					break;
+				} else {
+					//eliminiraj to skladiste ako trenutni korisnik ne stane v skladiste
+					warehouse_dist[warehouse] = total_dist;
 				}
 			}
 		}
