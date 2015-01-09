@@ -6,7 +6,7 @@
 #include "Constants.h"
 
 class GA{
-    class Jedinka {
+    public: class Jedinka {
         private:
             std::vector<User> skladiste[NUM_WAREHOUSE];
             int fitness;

@@ -126,7 +126,7 @@ int GA::run() {
             vector<User> skladiste;
 
             while (1) {
-                warehouse = Rand(1, NUM_WAREHOUSE) - 1;
+                warehouse = Rand(1, this->warehouses.size()) - 1;
                 skladiste = curr.getWarehouseUsers(warehouse);
                 capacity = this->warehouses[warehouse].getCapacity();
 
@@ -166,7 +166,7 @@ int GA::run() {
     vector< pair<int, vector<vector<User> > > > solution;
     int cnt = 0;
 
-    for (int i = 0; i < NUM_WAREHOUSE; ++i) {
+    for (int i = 0; i < this->warehouses.size(); ++i) {
         vector<User> skladiste = best.getWarehouseUsers(i);
         vector<vector<User> > curr = first_fit(skladiste, vehicle_capacity);
         solution.push_back(make_pair(i, curr));
@@ -202,21 +202,30 @@ int GA::run() {
     return 0;
 }
 
+inline bool cmp(const GA::Jedinka &a, const GA::Jedinka &b) {
+    return (a.getFitness() < b.getFitness());
+}
+
 void GA::selekcija(void) {
     // troturnirska selekcija
-    vector<Jedinka> next_population = this->population;
+    vector<Jedinka> next_population;
 
-    for (int i = 0; i < ELIMINATION; ++i) {
+    for (int i = 0; i < this->elimination_size; ++i) {
         int a = Rand(1, population_size) - 1;
         int b = Rand(1, population_size) - 1;
 
         Jedinka child = krizanje(this->population[a], this->population[b]);
 
         if (this->population[a].getFitness() < this->population[b].getFitness()) {
-            next_population[a] = child;
+            next_population.push_back(child);
         } else {
-            next_population[b] = child;
+            next_population.push_back(child);
         }
+    }
+
+    sort(this->population.begin(), this->population.end(), cmp);
+    for (int i = 0; i < this->population_size - this->elimination_size; ++i) {
+        next_population.push_back(this->population[i]);
     }
 
     this->population = next_population;
@@ -230,13 +239,13 @@ GA::Jedinka GA::krizanje(const Jedinka &a, const Jedinka &b) {
      * a od B[X, Y] s time da svi korisnici kaj su vec u B[X, Y] ne uzimamo iz
      * A[0, X] U A[Y, kraja] (ili obratno)
      */
-    int x = Rand(1, NUM_WAREHOUSE) - 1;
-    int y = Rand(1, NUM_WAREHOUSE) - 1;
+    int x = Rand(1, this->warehouses.size()) - 1;
+    int y = Rand(1, this->warehouses.size()) - 1;
     if (y < x) swap(x, y);
 
     set<int> flag;
 
-    for (int i = 0; i < NUM_WAREHOUSE; ++i) {
+    for (int i = 0; i < this->warehouses.size(); ++i) {
         vector<User> skladiste;
 
         if (i <= x || i >= y) {
@@ -280,7 +289,7 @@ GA::Jedinka GA::krizanje(const Jedinka &a, const Jedinka &b) {
 
     // ako nije dobra -> vrati bolju ili pokusaj opet
     bool fits = true;
-    for (int i = 0; i < NUM_WAREHOUSE; ++i) {
+    for (int i = 0; i < this->warehouses.size(); ++i) {
         vector<User> skladiste = child.getWarehouseUsers(i);
         int need = 0;
         for (int j = 0; j < skladiste.size(); ++j) {
@@ -321,7 +330,7 @@ GA::Jedinka GA::mutacija(const Jedinka &a) {
      * (ako time ne narusavamo dostupan kapacitet)
      */
 
-    int x = Rand(1, NUM_WAREHOUSE) - 1;
+    int x = Rand(1, this->warehouses.size()) - 1;
     vector<User> skladiste_x = a.getWarehouseUsers(x);
 
     if (skladiste_x.size() == 0) {
@@ -332,7 +341,7 @@ GA::Jedinka GA::mutacija(const Jedinka &a) {
 
     int y;
     while (1) {
-        y = Rand(1, NUM_WAREHOUSE) - 1;
+        y = Rand(1, this->warehouses.size()) - 1;
         vector<User> skladiste_y = a.getWarehouseUsers(y);
 
         int need = 0;
@@ -347,7 +356,7 @@ GA::Jedinka GA::mutacija(const Jedinka &a) {
         }
     }
 
-    for (int i = 0; i < NUM_WAREHOUSE; ++i) {
+    for (int i = 0; i < this->warehouses.size(); ++i) {
         vector<User> skladiste = a.getWarehouseUsers(i);
 
         for (int j = 0; j < skladiste.size(); ++j) {

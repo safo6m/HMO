@@ -7,8 +7,26 @@
 #include "Constants.h"
 
 #include <stack>
+#include <algorithm>
 
 using namespace std;
+
+vector<User> bitonic_tour_brute(vector<User> users, Warehouse w) {
+    users.push_back(User(-1, w.getX(), w.getY()));
+    vector<User> res;
+    int cost = -1;
+
+    do {
+        int temp = bitonic_tour_cost(users);
+        if (cost == -1 || cost > temp) {
+            cost = temp;
+            res = users;
+        }
+
+    } while (next_permutation(users.begin(), users.end()));
+
+    return res;
+}
 
 vector<User> bitonic_tour(vector<User> users, Warehouse w) {
     // insert warehouse
