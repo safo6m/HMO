@@ -212,15 +212,21 @@ void GA::selekcija(void) {
 
     for (int i = 0; i < this->elimination_size; ++i) {
         int a = Rand(1, population_size) - 1;
-        int b = Rand(1, population_size) - 1;
+        int b = Rand(2, population_size) - 1;
 
-        Jedinka child = krizanje(this->population[a], this->population[b]);
+        if (b <= a){
+            b--;
+        }
+
+        Jedinka child;
 
         if (this->population[a].getFitness() < this->population[b].getFitness()) {
-            next_population.push_back(child);
+            child = krizanje(this->population[a], this->population[b]);
         } else {
-            next_population.push_back(child);
+            child = krizanje(this->population[b], this->population[a]);
         }
+
+        next_population.push_back(child);
     }
 
     sort(this->population.begin(), this->population.end(), cmp);
