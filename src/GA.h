@@ -19,8 +19,6 @@ class GA{
             void setWarehouseUser(const int &warehouse, const User &user);
 
             void updateFitness(const std::vector<Warehouse> &w, int capacity, int cost);
-
-            bool operator ==(const Jedinka &a);
     };
 
     private:
