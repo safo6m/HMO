@@ -142,7 +142,7 @@ int GA::run() {
 				skladiste = curr.getWarehouseUsers(warehouse);
 				capacity = this->warehouses[warehouse].getCapacity();
 
-				for (int k = 0; k < skladiste.size(); ++k) {
+				for (int k = 0; k < (int)skladiste.size(); ++k) {
 					capacity -= skladiste[k].getCapacity();
 				}
 
@@ -184,7 +184,7 @@ int GA::run() {
 	vector< pair<int, vector<vector<User> > > > solution;
 	int cnt = 0;
 
-	for (int i = 0; i < this->warehouses.size(); ++i) {
+	for (int i = 0; i < (int)this->warehouses.size(); ++i) {
 		vector<User> skladiste = best.getWarehouseUsers(i);
 		vector<vector<User> > curr = dist_fit(skladiste, vehicle_capacity);
 		solution.push_back(make_pair(i, curr));
@@ -193,11 +193,11 @@ int GA::run() {
 
 	printf("%d\n\n", cnt);
 
-	for (int i = 0; i < solution.size(); ++i) {
+	for (int i = 0; i < (int)solution.size(); ++i) {
 		int warehouse_id = solution[i].first;
 		vector<vector<User> > tours = solution[i].second;
 
-		for (int j = 0; j < tours.size(); ++j) {
+		for (int j = 0; j < (int)tours.size(); ++j) {
 			printf("%d: ", warehouse_id);
 			vector<User> tour = bitonic_tour(tours[j], this->warehouses[warehouse_id]);
 
@@ -206,7 +206,7 @@ int GA::run() {
 				start += 1;
 			}
 
-			for (int k = 1; k < tour.size(); ++k) {
+			for (int k = 1; k < (int)tour.size(); ++k) {
 				printf(" %d", tour[(start + k) % (tour.size())].getID());
 			}
 
@@ -269,7 +269,7 @@ GA::Jedinka GA::krizanje(const Jedinka &a, const Jedinka &b) {
 
 	set<int> flag;
 
-	for (int i = 0; i < this->warehouses.size(); ++i) {
+	for (int i = 0; i < (int)this->warehouses.size(); ++i) {
 		vector<User> skladiste;
 
 		if (i <= x || i >= y) {
@@ -278,7 +278,7 @@ GA::Jedinka GA::krizanje(const Jedinka &a, const Jedinka &b) {
 			skladiste = b.getWarehouseUsers(i);
 		}
 
-		for (int j = 0; j < skladiste.size(); ++j) {
+		for (int j = 0; j < (int)skladiste.size(); ++j) {
 			if (flag.find(skladiste[j].getID()) == flag.end()) {
 				child.setWarehouseUser(i, skladiste[j]);
 				flag.insert(skladiste[j].getID());
@@ -287,7 +287,7 @@ GA::Jedinka GA::krizanje(const Jedinka &a, const Jedinka &b) {
 	}
 
 	// rasporedi preostale
-	for (int j = 0; j < this->users.size(); ++j) {
+	for (int j = 0; j < (int)this->users.size(); ++j) {
 		if (flag.find(j) != flag.end()) {
 			continue;
 		}
@@ -300,7 +300,7 @@ GA::Jedinka GA::krizanje(const Jedinka &a, const Jedinka &b) {
 			skladiste = child.getWarehouseUsers(warehouse);
 			capacity = this->warehouses[warehouse].getCapacity();
 
-			for (int k = 0; k < skladiste.size(); ++k) {
+			for (int k = 0; k < (int)skladiste.size(); ++k) {
 				capacity -= skladiste[k].getCapacity();
 			}
 
@@ -313,10 +313,10 @@ GA::Jedinka GA::krizanje(const Jedinka &a, const Jedinka &b) {
 
 	// ako nije dobra -> vrati bolju ili pokusaj opet
 	bool fits = true;
-	for (int i = 0; i < this->warehouses.size(); ++i) {
+	for (int i = 0; i < (int)this->warehouses.size(); ++i) {
 		vector<User> skladiste = child.getWarehouseUsers(i);
 		int need = 0;
-		for (int j = 0; j < skladiste.size(); ++j) {
+		for (int j = 0; j < (int)skladiste.size(); ++j) {
 			need += skladiste[j].getCapacity();
 		}
 
@@ -361,7 +361,7 @@ GA::Jedinka GA::mutacija(const Jedinka &a) {
 		vector<User> skladiste_y = a.getWarehouseUsers(y);
 
 		int need = 0;
-		for (int j = 0; j < skladiste_y.size(); ++j) {
+		for (int j = 0; j < (int)skladiste_y.size(); ++j) {
 			need += skladiste_y[j].getCapacity();
 		}
 
@@ -372,10 +372,10 @@ GA::Jedinka GA::mutacija(const Jedinka &a) {
 		}
 	}
 
-	for (int i = 0; i < this->warehouses.size(); ++i) {
+	for (int i = 0; i < (int)this->warehouses.size(); ++i) {
 		vector<User> skladiste = a.getWarehouseUsers(i);
 
-		for (int j = 0; j < skladiste.size(); ++j) {
+		for (int j = 0; j < (int)skladiste.size(); ++j) {
 			if (i != x || j != z) {
 				mut.setWarehouseUser(i, skladiste[j]);
 			}
@@ -403,7 +403,7 @@ void GA::Jedinka::updateFitness(const vector<Warehouse> &w, int capacity, int co
 		if (skladiste[i].size() > 0) {
 			vector<vector<User> > tours = dist_fit(skladiste[i], capacity);
 
-			for (int j = 0; j < tours.size(); ++j) {
+			for (int j = 0; j < (int)tours.size(); ++j) {
 				vector<User> tour = bitonic_tour(tours[j], w[i]);
 				res += cost;
 				res += bitonic_tour_cost(tour);

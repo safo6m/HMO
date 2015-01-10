@@ -7,7 +7,7 @@
 using namespace std;
 
 const int POPULATION = 100;
-const int ITERATION  = 1000;
+const int ITERATION  = 10000;
 
 inline int Rand(int lo, int hi) {
 	return (rand() % (hi - lo + 1)) + lo;
@@ -144,8 +144,8 @@ vector< vector<user_t> > dist_fit(vector<user_t> users, int capacity, warehouse_
         int curr;
         int cap;
 
-        for (curr = 0; curr < users.size() && FLAG[curr]; ++curr);
-        if (curr >= users.size()) break;
+        for (curr = 0; curr < (int)users.size() && FLAG[curr]; ++curr);
+        if (curr >= (int)users.size()) break;
 
         FLAG[curr] = 1;
         cap = capacity - users[curr].capacity;
@@ -157,7 +157,7 @@ vector< vector<user_t> > dist_fit(vector<user_t> users, int capacity, warehouse_
             int dist;
 
             for (auto it = bin.begin(); it != bin.end(); ++it) {
-                for (int i = 0; i < users.size(); ++i) {
+                for (int i = 0; i < (int)users.size(); ++i) {
                     if (FLAG[i]) continue;
                     if (cap < users[i].capacity) continue;
 
@@ -195,7 +195,7 @@ vector< vector<user_t> > closest_fit(vector<user_t> users, int capacity, warehou
         int best_dist, best_id = -1, dist;
         int cap = capacity;
 
-        for (int i = 0; i < users.size(); ++i) {
+        for (int i = 0; i < (int)users.size(); ++i) {
             if (FLAG[i]) continue;
 
             dist = w.get_distance(users[i]);
@@ -215,7 +215,7 @@ vector< vector<user_t> > closest_fit(vector<user_t> users, int capacity, warehou
             best_id = -1;
 
             for (auto it = bin.begin(); it != bin.end(); ++it) {
-                for (int i = 0; i < users.size(); ++i) {
+                for (int i = 0; i < (int)users.size(); ++i) {
                     if (FLAG[i]) continue;
                     if (cap < users[i].capacity) continue;
 
@@ -393,7 +393,7 @@ vector< vector<user_t> > arrange_users_fitness(
 
                     tours = closest_fit(temp, vehicle_capacity, warehouses[i]);
 
-                    for (int k = 0; k < tours.size(); ++k) {
+                    for (int k = 0; k < (int)tours.size(); ++k) {
                         dist += tour_cost(tour(tours[k], warehouses[i]));
                         dist += vehicle_cost;
                     }
@@ -431,7 +431,7 @@ int fitness(vector< vector<user_t> > sol,
 
             tours = closest_fit(sol[i], vehicle_capacity, warehouses[i]);
 
-            for (int j = 0; j < tours.size(); ++j) {
+            for (int j = 0; j < (int)tours.size(); ++j) {
                 fitness += tour_cost(tour(tours[j], warehouses[i]));
                 fitness += vehicle_cost;
             }
@@ -612,7 +612,7 @@ int main(int argc, char** argv) {
             // dist_fit, first_fit, closest_fit
             tours = closest_fit(greedy[i], vehicle_capacity, warehouses[i]);
 
-            for (int j = 0; j < tours.size(); ++j) {
+            for (int j = 0; j < (int)tours.size(); ++j) {
                 curr = tour(tours[j], warehouses[i]);
 
                 sol += tour_cost(curr);
@@ -627,7 +627,7 @@ int main(int argc, char** argv) {
 
     printf("%d\n\n", tours_cnt);
 
-    for (int i = 0; i < output.size(); ++i) {
+    for (int i = 0; i < (int)output.size(); ++i) {
         int &id = output[i].first;
         vector< user_t > &path = output[i].second;
 

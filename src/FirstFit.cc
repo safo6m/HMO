@@ -48,13 +48,13 @@ vector< vector<User> > dist_fit(vector<User> users, int capacity) {
     while (1) {
         vector< User > bin;
         int curr;
-        for (curr = 0; curr < users.size(); ++curr) {
+        for (curr = 0; curr < (int)users.size(); ++curr) {
 		if (FLAG.find(curr) == FLAG.end()) {
 			break;
 		}
 	}
 
-        if (curr >= users.size()) break;
+        if (curr >= (int)users.size()) break;
 
         int cap = capacity - users[curr].getCapacity();
 
@@ -67,7 +67,7 @@ vector< vector<User> > dist_fit(vector<User> users, int capacity) {
             int dist;
 
             for (auto it = bin.begin(); it != bin.end(); ++it) {
-                for (int i = 0; i < users.size(); ++i) {
+                for (int i = 0; i < (int)users.size(); ++i) {
                     if (FLAG.find(i) != FLAG.end()) continue;
                     if (cap < users[i].getCapacity()) continue;
 
