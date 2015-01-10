@@ -117,17 +117,19 @@ vector< vector<user_t> > dist_fit(vector<user_t> users, int capacity) {
 
     while (1) {
         vector< user_t > bin;
-        int cap = capacity;
         int curr;
+        int cap;
+
         for (curr = 0; curr < users.size() && FLAG[curr]; ++curr);
 
         if (curr >= users.size()) break;
 
         FLAG[curr] = 1;
+        cap = capacity - users[curr].capacity;
 
         bin.push_back(users[curr]);
 
-        while (1) {
+        while (cap > 0) {
             int best_dist, best_id = -1;
             int dist;
 

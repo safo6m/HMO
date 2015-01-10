@@ -413,7 +413,7 @@ void GA::Jedinka::updateFitness(const vector<Warehouse> &w, int capacity, int co
 	int res = 0;
 	for (int i = 0; i < NUM_WAREHOUSE; ++i) {
 		if (skladiste[i].size() > 0) {
-			vector<vector<User> > tours = first_fit(skladiste[i], capacity);
+			vector<vector<User> > tours = dist_fit(skladiste[i], capacity);
 
 			for (int j = 0; j < tours.size(); ++j) {
 				vector<User> tour = bitonic_tour(tours[j], w[i]);
