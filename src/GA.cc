@@ -163,10 +163,13 @@ int GA::run() {
 	fprintf(stderr, " done\n");
 
 	fprintf(stderr, "Starting GA.\n");
+	fprintf(stderr, "[||||||||||]\n ");
 	for (int ITER = 0; ITER < this->iterations; ++ITER) {
-		if (ITER % 1000 == 0) fprintf(stderr, "%d\n", ITER);
+		if (ITER % (this->iterations / 10) == 0) fprintf(stderr, ".");
 		selekcija();
 	}
+
+	fprintf(stderr, "\n");
 
 	fprintf(stderr, "Extracting best unit from population.\n");
 	Jedinka best = this->population[0];

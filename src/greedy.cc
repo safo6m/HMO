@@ -2,8 +2,16 @@
 #include <cmath>
 #include <vector>
 #include <cstdlib>
+#include <ctime>
 
 using namespace std;
+
+const int POPULATION = 100;
+const int ITERATION  = 1000;
+
+inline int Rand(int lo, int hi) {
+	return (rand() % (hi - lo + 1)) + lo;
+}
 
 class user_t {
     public:
@@ -97,7 +105,7 @@ vector<user_t> tour(vector<user_t> users, warehouse_t w) {
     return res;
 }
 
-vector< vector<user_t> > first_fit(vector<user_t> users, int capacity) {
+vector< vector<user_t> > first_fit(vector<user_t> users, int capacity, warehouse_t warehouse) {
     int n = users.size();
 
     vector<int> bins;
@@ -125,7 +133,7 @@ vector< vector<user_t> > first_fit(vector<user_t> users, int capacity) {
     return ret;
 }
 
-vector< vector<user_t> > dist_fit(vector<user_t> users, int capacity) {
+vector< vector<user_t> > dist_fit(vector<user_t> users, int capacity, warehouse_t warehouse) {
     vector< vector<user_t> > ret;
 
     bool FLAG[1024];
@@ -211,7 +219,7 @@ vector< vector<user_t> > closest_fit(vector<user_t> users, int capacity, warehou
                     if (FLAG[i]) continue;
                     if (cap < users[i].capacity) continue;
 
-                    dist = users[i].get_distance(*it) + users[i].get_distance(w);;
+                    dist = users[i].get_distance(*it) + users[i].get_distance(w);
                     if (best_id == -1 || dist < best_dist) {
                         best_dist = dist;
                         best_id = i;
@@ -328,7 +336,7 @@ vector< vector<user_t> > arrange_users(
                     if (w[i] + users[j].capacity > warehouses[i].capacity) continue;
 
                     dist = users[j].get_distance(warehouses[i]) +
-                           users[j].get_distance(*it);
+                        users[j].get_distance(*it);
 
                     if (w[i] == 0)
                         dist += warehouses[i].cost;
@@ -408,6 +416,72 @@ vector< vector<user_t> > arrange_users_fitness(
     return ret;
 }
 
+int fitness(vector< vector<user_t> > sol,
+        const vector<warehouse_t> warehouses, int num_warehouse,
+        int vehicle_capacity, int vehicle_cost) {
+
+    int fitness = 0;
+
+    vector< user_t > curr;
+    vector< vector<user_t> > tours;
+
+    for (int i = 0; i < num_warehouse; ++i) {
+        if (sol[i].size() > 0) {
+            fitness += warehouses[i].cost;
+
+            tours = closest_fit(sol[i], vehicle_capacity, warehouses[i]);
+
+            for (int j = 0; j < tours.size(); ++j) {
+                fitness += tour_cost(tour(tours[j], warehouses[i]));
+                fitness += vehicle_cost;
+            }
+        }
+    }
+
+    return fitness;
+}
+
+vector< vector<user_t> > mutation(const vector< vector<user_t> > &x,
+        const vector<warehouse_t> &warehouses,
+        int num_warehouse,
+        const vector<user_t> &users,
+        int num_user) {
+
+    srand(time(NULL));
+    vector< vector<user_t> > mut(num_warehouse);
+
+    int src = Rand(1, num_warehouse) - 1;
+
+    if (x[src].size() == 0) return x;
+
+    int id = x[src][Rand(1, x[src].size()) - 1].id;
+
+    while (1) {
+        int dst = Rand(1, num_warehouse) - 1;
+        if (src == dst) continue;
+
+        int left = warehouses[dst].capacity;
+        for (auto it = x[dst].begin(); it != x[dst].end(); ++it) {
+            left -= it->capacity;
+        }
+
+        if (users[id].capacity <= left) {
+            for (int i = 0; i < num_warehouse; ++i) {
+                if (i == src) continue;
+                mut[i] = x[i];
+            }
+            for (auto it = x[src].begin(); it != x[src].end(); ++it) {
+                if (it->id == id) continue;
+                mut[src].push_back(*it);
+            }
+            mut[dst].push_back(users[id]);
+            break;
+        }
+    }
+
+    return mut;
+}
+
 int main(int argc, char** argv) {
     int x, y;
     int num_user, num_warehouse;
@@ -419,6 +493,8 @@ int main(int argc, char** argv) {
 
     vector<user_t> users;
     vector<warehouse_t> warehouses;
+
+    fprintf(stderr, "Reading input file ...");
 
     FILE *f = fopen("input.in", "r");
     fscanf(f, "%d", &num_user);
@@ -460,10 +536,69 @@ int main(int argc, char** argv) {
 
     fscanf(f, "%d", &vehicle_cost);
 
+    fprintf(stderr, "done\n");
+
+    fprintf(stderr, "Computing first solution ...");
+    // arrange_users, arrange_users_dist, arrange_users_fitness
     vector< vector<user_t> > greedy = arrange_users(
-                      warehouses, num_warehouse,
-                      users, num_user,
-                      vehicle_capacity, vehicle_cost);
+            warehouses, num_warehouse,
+            users, num_user,
+            vehicle_capacity, vehicle_cost);
+
+    int f_gre = fitness(greedy,
+            warehouses,
+            num_warehouse,
+            vehicle_capacity,
+            vehicle_cost);
+
+    fprintf(stderr, "done\n");
+
+    vector< pair< vector< vector<user_t> >, int > > population;
+    for (int i = 0; i < POPULATION; ++i) {
+        population.push_back(make_pair(greedy, f_gre));
+    }
+
+    fprintf(stderr, "[||||||||||]\n ");
+    for (int i = 0; i < ITERATION; ++i) {
+		if (i % (ITERATION / 10) == 0) fprintf(stderr, ".");
+
+        for (int j = 0; j < POPULATION; ++j) {
+            vector< vector< user_t > > mut =
+                mutation(population[j].first,
+                         warehouses,
+                         num_warehouse,
+                         users,
+                         num_user);
+
+            int f_mut = fitness(mut,
+                    warehouses,
+                    num_warehouse,
+                    vehicle_capacity,
+                    vehicle_cost);
+
+            int f_pop = population[j].second;
+
+            if (f_mut < f_pop) {
+                population[j].first = mut;
+                population[j].second = f_mut;
+            }
+        }
+    }
+
+	fprintf(stderr, "\n");
+
+	fprintf(stderr, "Finding best solution ...");
+
+    for (int i = 0; i < POPULATION; ++i) {
+        int f_pop = population[i].second;
+
+        if (f_pop < f_gre) {
+            greedy = population[i].first;
+            f_gre = f_pop;
+        }
+    }
+
+	fprintf(stderr, "done\n");
 
     vector< user_t > curr;
     vector< vector<user_t> > tours;
@@ -474,6 +609,7 @@ int main(int argc, char** argv) {
         if (greedy[i].size() > 0) {
             sol += warehouses[i].cost;
 
+            // dist_fit, first_fit, closest_fit
             tours = closest_fit(greedy[i], vehicle_capacity, warehouses[i]);
 
             for (int j = 0; j < tours.size(); ++j) {
@@ -508,7 +644,7 @@ int main(int argc, char** argv) {
     }
 
     printf("\n%d\n", sol);
-    fprintf(stderr, "%d\n", sol);
+    fprintf(stderr, "Minimal computed cost: %d\n", sol);
 
     return 0;
 }
