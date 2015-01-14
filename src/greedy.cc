@@ -680,7 +680,7 @@ int main(int argc, char** argv) {
 
 	fprintf(stderr, "\n");
 
-    fprintf(stderr, "Starting local search: ");
+    fprintf(stderr, "Starting local search:\n");
 
     for (int i = 0; i < POPULATION; ++i) {
         fprintf(stderr, "\tsolution %d: ", i + 1);
