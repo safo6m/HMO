@@ -1,14 +1,19 @@
-\frametitle{Rješenje}
+\frametitle{Izgradnja rješenja}
 \begin{lstlisting}
-A = pocetno rjesenje
-P = niz od POPULACIJA kopija od A
+dok ima vozila ili korisnika:
+  za svako dostupno skladiste:
+    ako ima vozila u skladistu:
+      izgradi ciklus
+    ako je ciklus najkraci:
+      zapamti najkraci ciklus
 
-ponovi ITERACIJA broj puta:
-  za svako rjesenje R iz P:
-    mutiraj(R)
+  spremi najkraci ciklus u rjesenje
+  osvjezi neposluzene korisnike
+  oduzmi vozilo iz skladista
 
-za svako rjesenjeR  iz P:
-  lokalna_pretraga(R)
+ako ima neposluzenih korisnika:
+  rjesenje nije pronadeno
+inace
+  vrati rjesenje
 
-izdvoji najbolje rjesenje iz P
 \end{lstlisting}
