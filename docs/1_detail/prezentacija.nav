@@ -30,35 +30,44 @@
 \headcommand {\beamer@framepages {11}{11}}
 \headcommand {\slideentry {2}{1}{8}{12/12}{Genetski algoritam}{0}}
 \headcommand {\beamer@framepages {12}{12}}
-\headcommand {\beamer@subsectionentry {0}{2}{2}{13}{Pohlepni algoritam}}\headcommand {\beamer@subsectionpages {5}{12}}
-\headcommand {\slideentry {2}{2}{1}{13/13}{Pohlepni algoritam}{0}}
+\headcommand {\beamer@subsectionentry {0}{2}{2}{13}{Pohlepni genetski algoritam}}\headcommand {\beamer@subsectionpages {5}{12}}
+\headcommand {\slideentry {2}{2}{1}{13/13}{Pohlepni genetski algoritam}{0}}
 \headcommand {\beamer@framepages {13}{13}}
-\headcommand {\slideentry {2}{2}{2}{14/14}{Pohlepni algoritam}{0}}
+\headcommand {\slideentry {2}{2}{2}{14/14}{Pohlepni genetski algoritam}{0}}
 \headcommand {\beamer@framepages {14}{14}}
-\headcommand {\slideentry {2}{2}{3}{15/15}{Pohlepni algoritam}{0}}
+\headcommand {\slideentry {2}{2}{3}{15/15}{Pohlepni genetski algoritam}{0}}
 \headcommand {\beamer@framepages {15}{15}}
-\headcommand {\slideentry {2}{2}{4}{16/16}{Pohlepni algoritam}{0}}
+\headcommand {\slideentry {2}{2}{4}{16/16}{Pohlepni genetski algoritam}{0}}
 \headcommand {\beamer@framepages {16}{16}}
-\headcommand {\slideentry {2}{2}{5}{17/17}{Pohlepni algoritam}{0}}
+\headcommand {\slideentry {2}{2}{5}{17/17}{Pohlepni genetski algoritam}{0}}
 \headcommand {\beamer@framepages {17}{17}}
-\headcommand {\slideentry {2}{2}{6}{18/18}{Pohlepni algoritam}{0}}
+\headcommand {\slideentry {2}{2}{6}{18/18}{Pohlepni genetski algoritam}{0}}
 \headcommand {\beamer@framepages {18}{18}}
-\headcommand {\slideentry {2}{2}{7}{19/19}{Pohlepni algoritam}{0}}
+\headcommand {\slideentry {2}{2}{7}{19/19}{Pohlepni genetski algoritam}{0}}
 \headcommand {\beamer@framepages {19}{19}}
-\headcommand {\slideentry {2}{2}{8}{20/20}{Pohlepni algoritam}{0}}
+\headcommand {\slideentry {2}{2}{8}{20/20}{Pohlepni genetski algoritam}{0}}
 \headcommand {\beamer@framepages {20}{20}}
-\headcommand {\sectionentry {3}{Rezultati}{21}{Rezultati}{0}}
-\headcommand {\beamer@sectionpages {4}{20}}
-\headcommand {\beamer@subsectionpages {13}{20}}
-\headcommand {\slideentry {3}{0}{9}{21/21}{}{0}}
+\headcommand {\beamer@subsectionentry {0}{2}{3}{21}{Pohlepni baseline algoritam}}\headcommand {\beamer@subsectionpages {13}{20}}
+\headcommand {\slideentry {2}{3}{1}{21/21}{Pohlepni baseline algoritam}{0}}
 \headcommand {\beamer@framepages {21}{21}}
-\headcommand {\sectionentry {4}{Zaklju\IeC {\v c}ak}{22}{Zaklju\IeC {\v c}ak}{0}}
-\headcommand {\beamer@sectionpages {21}{21}}
-\headcommand {\beamer@subsectionpages {21}{21}}
-\headcommand {\slideentry {4}{0}{10}{22/22}{}{0}}
+\headcommand {\slideentry {2}{3}{2}{22/22}{Pohlepni baseline algoritam}{0}}
 \headcommand {\beamer@framepages {22}{22}}
-\headcommand {\beamer@partpages {1}{22}}
-\headcommand {\beamer@subsectionpages {22}{22}}
-\headcommand {\beamer@sectionpages {22}{22}}
-\headcommand {\beamer@documentpages {22}}
-\headcommand {\def \inserttotalframenumber {22}}
+\headcommand {\slideentry {2}{3}{3}{23/23}{Pohlepni baseline algoritam}{0}}
+\headcommand {\beamer@framepages {23}{23}}
+\headcommand {\slideentry {2}{3}{4}{24/24}{Pohlepni baseline algoritam}{0}}
+\headcommand {\beamer@framepages {24}{24}}
+\headcommand {\sectionentry {3}{Rezultati}{25}{Rezultati}{0}}
+\headcommand {\beamer@sectionpages {4}{24}}
+\headcommand {\beamer@subsectionpages {21}{24}}
+\headcommand {\slideentry {3}{0}{5}{25/25}{}{0}}
+\headcommand {\beamer@framepages {25}{25}}
+\headcommand {\sectionentry {4}{Zaklju\IeC {\v c}ak}{26}{Zaklju\IeC {\v c}ak}{0}}
+\headcommand {\beamer@sectionpages {25}{25}}
+\headcommand {\beamer@subsectionpages {25}{25}}
+\headcommand {\slideentry {4}{0}{6}{26/26}{}{0}}
+\headcommand {\beamer@framepages {26}{26}}
+\headcommand {\beamer@partpages {1}{26}}
+\headcommand {\beamer@subsectionpages {26}{26}}
+\headcommand {\beamer@sectionpages {26}{26}}
+\headcommand {\beamer@documentpages {26}}
+\headcommand {\def \inserttotalframenumber {26}}

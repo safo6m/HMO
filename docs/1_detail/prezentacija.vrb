@@ -1,14 +1,16 @@
-\frametitle{Fitness}
+\frametitle{Pohlepno generiranje Hamiltonovog ciklusa}
 \begin{lstlisting}
-fitness = 0
-za svako skladiste X:
-  ako ima korisnika u X:
-    fitness += cijena otvaranja skladista X
+dodaj skladiste u ciklus
+prethodni cvor = skladiste
+dok vozilo ima kapacitet i postoji korisnik:
+  trenutni cvor = najblizi(prethodni cvor)
+  ako trenutni cvor ima preveliki trosak i postoji drugi cvor:
+    trenutni cvor = pronadi drugi(prethodni cvor)
+  inace:
+    gotovo
+  dodaj trenutni cvor u ciklus
+  oduzmi kapacitet
+  prethodni cvor = trenutni cvor
 
-    R[] = closest_fit(X)
-    za svaku rutu R` iz R:
-      C = tour(R`)
-      cijena += tour_cost(C)
-      cijena += cijena automobila * broj ruta
 
 \end{lstlisting}
