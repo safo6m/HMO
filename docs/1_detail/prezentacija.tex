@@ -63,12 +63,14 @@ Kapacitativni problem usmjeravanja vozila iz višebrojnih skladišta sastoji se 
 \begin{frame}
 \frametitle{Pristup rješavajnu}
 
-Ovom smo problemu odlučili pristupiti na dva načina:
+Ovom smo problemu odlučili pristupiti na tri načina:
 \vspace{5mm}
 \begin{itemize}
-	\item Genetskim algoritmom
-	\vspace{5mm}
-	\item Pohlepnim algoritmom
+  \item Genetskim algoritmom
+  \vspace{5mm}
+  \item Pohlepnim genetskim algoritmom
+  \vspace{5mm}
+  \item Pohlepnim baseline algoritmom
 \end{itemize}
 
 \end{frame}
@@ -152,11 +154,11 @@ Parametar mutacije se zadaje prilikom pokretanja programa, a podrazumijevani izn
 
 Dobrotu jedinke računamo na sljedeći način:
 \begin{itemize}
-	\item za svako skladište, koristeći pohlepni algoritam, dodijelimo vozila za neki skup korisnika sve dok ne zadovoljimo sve korisnike (\textit{dist\_fit} funkcija)
-	
-	\item za svaku rutu vozila, grubom silom izračunamo najkraći Hamiltonov ciklus (\textit{bitonic\_tour\_brute}) te njegovu cijenu (\textit{bitonic\_tour\_cost} funkcija)
-	
-	\item tako dobivene troškove pozbrajamo i spremamo u jedinku
+  \item za svako skladište, koristeći pohlepni algoritam, dodijelimo vozila za neki skup korisnika sve dok ne zadovoljimo sve korisnike (\textit{dist\_fit} funkcija)
+  
+  \item za svaku rutu vozila, grubom silom izračunamo najkraći Hamiltonov ciklus (\textit{bitonic\_tour\_brute}) te njegovu cijenu (\textit{bitonic\_tour\_cost} funkcija)
+  
+  \item tako dobivene troškove pozbrajamo i spremamo u jedinku
 \end{itemize}
 
 \end{frame}
@@ -179,11 +181,11 @@ for (int i = 0; i < NUM_WAREHOUSE; ++i) {
 \end{lstlisting}
 \end{frame}
 
-\subsection{Pohlepni algoritam}
+\subsection{Pohlepni genetski algoritam}
 \begin{frame}
-\frametitle{Pohlepni algoritam}
+\frametitle{Pohlepni genetski algoritam}
 
-Pohlepni algoritam nakon učitavanja podataka razvrstava korisnike po skladištima na način da u trenutnom koraku minimizira trošak trenutnog korisnika do njemu najbližeg iz skladište u koje ga pokušava staviti uz dodatak troška povratka od tog korisnika do skladišta. Ako skladište u tom trenutku nema ni jednog korisnika, cijeni se dodaje trošak otvaranja skladišta.
+Algoritam nakon učitavanja podataka razvrstava korisnike po skladištima na način da u trenutnom koraku minimizira trošak trenutnog korisnika do njemu najbližeg iz skladište u koje ga pokušava staviti uz dodatak troška povratka od tog korisnika do skladišta. Ako skladište u tom trenutku nema ni jednog korisnika, cijeni se dodaje trošak otvaranja skladišta.
 
 \vspace{5mm}
 
@@ -195,16 +197,16 @@ To radi tako dugo dok ne razvrsta sve korisnike.
 \begin{lstlisting}
 dok ima nereazvrstanih korisnika X:
   za svako skladiste Y:
-    za svakog korisnika Z u skladistu Y:	
-		
+    za svakog korisnika Z u skladistu Y:  
+    
       cijena = udaljenost(X, Z) + udaljenost(X, Y)
-			
+      
       ako je skladiste Y prazno:
         cijena += cijena otvaranja skladista Y
-		
+    
       ako je  cijena najmanja do sad:
         W = Y
-	
+  
       stavi korisnika X u skladiste W
 \end{lstlisting}
 \end{frame}
@@ -231,7 +233,7 @@ ponovi ITERACIJA broj puta:
     slucajno odaberi skladiste X
     slucajno odaberi skladiste Y
     slucajno odaberi korisnika A iz skladista X
-		
+    
     ako prebacivanje A iz X u Y narusava ogranicenja:
       ponovi odabir skladista i korisinka
     inace:
@@ -277,11 +279,11 @@ ponovi LIMIT broj puta ili dok ne konvergira:
 \frametitle{Fitness}
 Dobrotu rješenja računamo na sljedeći način:
 \begin{itemize}
-	\item za svako skladište, koristeći pohlepni algoritam, dodijelimo vozila za neki skup korisnika sve dok ne zadovoljimo sve korisnike (\textit{closest\_fit} funkcija)
-	
-	\item za svaku rutu vozila, grubom silom izračunamo najkraći Hamiltonov ciklus (\textit{tour}) te njegovu cijenu (\textit{tour\_cost} funkcija)
-	
-	\item za svaku rutu vozila dodajemo cijenu novog vozila
+  \item za svako skladište, koristeći pohlepni algoritam, dodijelimo vozila za neki skup korisnika sve dok ne zadovoljimo sve korisnike (\textit{closest\_fit} funkcija)
+  
+  \item za svaku rutu vozila, grubom silom izračunamo najkraći Hamiltonov ciklus (\textit{tour}) te njegovu cijenu (\textit{tour\_cost} funkcija)
+  
+  \item za svaku rutu vozila dodajemo cijenu novog vozila
 \end{itemize}
 \end{frame}
 
@@ -301,26 +303,79 @@ za svako skladiste X:
 \end{lstlisting}
 \end{frame}
 
+\subsection{Pohlepni baseline algoritam}
+\begin{frame}
+\frametitle{Pohlepni baseline algoritam}
+
+Algoritam nakon učitavanja podataka iterativno kombinira manji broj skladišta te pokušava pohlepnim pretraživanjem Hamiltonovih ciklusa izgraditi konačno rješenje. U svakoj iteraciji se gradi jedan Hamiltonov ciklus za svako skladište te se u konačno rješenje dodaje samo najkraći ciklus. Algoritam se zaustavlja ukoliko je problem rješen ili nema više dostupnih vozila.
+
+\end{frame}
+
+\begin{frame}[fragile]{Izgradnja rješenja}
+\begin{lstlisting}
+dok ima vozila ili korisnika:
+  za svako dostupno skladiste:
+    ako ima vozila u skladistu:
+      izgradi ciklus
+    ako je ciklus najkraci:
+      zapamti najkraci ciklus
+
+  spremi najkraci ciklus u rjesenje
+  osvjezi neposluzene korisnike
+  oduzmi vozilo iz skladista
+
+ako ima neposluzenih korisnika:
+  rjesenje nije pronadeno
+inace
+  vrati rjesenje
+
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}
+\frametitle{Izgradnja Hamiltonovog ciklusa}
+Hamiltonov ciklus se izgrađuje dodavanjem najbližeg čvora u cuklus sve dok ukupan trošak čvorova ne premašuje kapacitet vozila. Ukoliko je na kraju ostalo dovoljno kapaciteta u vozilu pokuša se dodati i neki udaljeniji čvor koji ima manji trošak. Relativna udaljenost drugih čvorova određena je udaljenošću zadnja dva čvora u ciklusu.
+\end{frame}
+
+\begin{frame}[fragile]{Pohlepno generiranje Hamiltonovog ciklusa}
+\begin{lstlisting}
+dodaj skladiste u ciklus
+prethodni cvor = skladiste
+dok vozilo ima kapacitet i postoji korisnik:
+  trenutni cvor = najblizi(prethodni cvor)  
+  ako trenutni cvor ima preveliki trosak i postoji drugi cvor:
+    trenutni cvor = pronadi drugi(prethodni cvor)
+  inace:
+    gotovo
+  dodaj trenutni cvor u ciklus
+  oduzmi kapacitet
+  prethodni cvor = trenutni cvor
+  
+  
+\end{lstlisting}
+\end{frame}
+
 \section{Rezultati}
 \begin{frame}
-\frametitle{Usporedba rješenja genetskog i pohlepnog algoritma}
+\frametitle{Usporedba rješenja}
 
 Najmanji trošak dobiven genetskim algoritmom iznosi: 321140
 
 \vspace{5mm}
 
-Najmanji trošak dobiven pohlepnim algoritmom iznosi: 315983
+Najmanji trošak dobiven pohlepnim genetskim algoritmom iznosi: 315983
+
+\vspace{5mm}
+
+Najmanji trošak dobiven baseline algoritmom iznosi: 285727
 
 \end{frame}
 
 \section{Zaključak}
 \begin{frame}
 \frametitle{Zaključak}
-Iako je genetski algoritam pristup koji bi mogao rješavati druge (i veće) instance zadanog problema, pohlepni se algoritam pokazao bolji na zadanoj instanci problema.
+Iako je genetski algoritam pristup koji bi mogao rješavati druge (i veće) instance zadanog problema, pohlepni algoritmi su se pokazali bolji na zadanoj instanci problema.
 
-\vspace{5mm}
-
-Uvođenje dijelova genetskog algoritma u pohlepni algoritam (mutacija) dobiveno rješenje se dodatno poboljšalo.
 
 \end{frame}
 
