@@ -56,159 +56,82 @@ escapeinside={\%*}{*)}          % if you want to add a comment within your code
 
 Zadano:
 \begin{itemize}
-	\item usmjereni težinski graf
-	\item skladišta, njihov položaj, kapacitet i pripadajući troškovi otvaranja skladišta 
-	\item korisnici, njihov položaj i potražnja
-	\item početni trošak i kapacitet vozila
+  \item usmjereni težinski graf
+  \item skladišta, njihov položaj, kapacitet i pripadajući troškovi otvaranja skladišta 
+  \item korisnici, njihov položaj i potražnja
+  \item početni trošak i kapacitet vozila
 \end{itemize}
 
 Varijable:
 \begin{itemize}
-	\item broj skladišta 
-	\item broj vozila
-	\item obilasci vozila
+  \item broj skladišta 
+  \item broj vozila
+  \item obilasci vozila
 \end{itemize}
 
 Optimizacijski kriteriji:
 \begin{itemize}
-	\item minimizirati ukupni trošak otvaranja skladišta i ruta te ukupni trošak odabranih ruta
+  \item minimizirati ukupni trošak otvaranja skladišta i ruta te ukupni trošak odabranih ruta
 \end{itemize}
 
 \end{frame}
 
-\section{Opis algoritma}
+\subsection{Pohlepni algoritam}
 \begin{frame}
 \frametitle{Pohlepni algoritam}
 
-Pohlepni algoritam nakon učitavanja podataka razvrstava korisnike po skladištima na način da u trenutnom koraku minimizira trošak trenutnog korisnika do njemu najbližeg iz skladište u koje ga pokušava staviti uz dodatak troška povratka od tog korisnika do skladišta. Ako skladište u tom trenutku nema ni jednog korisnika, cijeni se dodaje trošak otvaranja skladišta.
-
-\vspace{5mm}
-
-To radi tako dugo dok ne razvrsta sve korisnike.
+Algoritam nakon učitavanja podataka iterativno kombinira manji broj skladišta te pokušava pohlepnim pretraživanjem Hamiltonovih ciklusa izgraditi konačno rješenje. U svakoj iteraciji se gradi jedan Hamiltonov ciklus za svako skladište te se u konačno rješenje dodaje samo najkraći ciklus. Algoritam se zaustavlja ukoliko je problem rješen ili nema više dostupnih vozila.
 
 \end{frame}
 
 \begin{frame}
-\frametitle{Mutacija}
-
-Nakon dobivanja početnog rješenja, napravi se $POPULACIJA$ broj kopija tog rješenja, te se nad svakim od njih radi se mutacija.
-
-Za slučajno odabrana skladišta $X$ i $Y$, slučajnim odabirom uzmi korisnika $Z$ iz skladišta $X$ te ga probaj staviti u skladište $Y$ ako time ne narušavamo kapacitet skladišta $Y$.
-
-\vspace{5mm}
-
-Ukoliko je mutirano rješenje bolje od trenutnog, ono se zamjenjuje u populaciji.
-
-\vspace{5mm}
-
-Taj se postupak ponavlja $ITERACIJA$ broj puta.
-
+\frametitle{Izgradnja Hamiltonovog ciklusa}
+Hamiltonov ciklus se izgrađuje dodavanjem najbližeg čvora u cuklus sve dok ukupan trošak čvorova ne premašuje kapacitet vozila. Ukoliko je na kraju ostalo dovoljno kapaciteta u vozilu pokuša se dodati i neki udaljeniji čvor koji ima manji trošak. Relativna udaljenost drugih čvorova određena je udaljenošću zadnja dva čvora u ciklusu.
 \end{frame}
 
-\begin{frame}
-\frametitle{Lokalna pretraga}
-
-Nakon što smo dobili $POPULACIJA$ broj mutiranih rješenja, nad svakim od njih se pokreće postupak lokalne pretrage. 
-
-\vspace{5mm}
-
-Postupak lokalne pretrage, odabire par korisnika $X$ i $Y$, te zamjenjuje njihova skladišta. Ako je rješenje ne narušava kapacitet ni jednog skladišta, spremamo ga u red te nastavljamo lokalnu pretragu sa sljedećim rješenjem iz reda.
-
-\vspace{5mm}
-
-Postupak radimo tako dugo dok ima rješenja u redu ili napravimo $limit$ broj iteracija.
-
-\end{frame}
-
-\section{Pseudokod}
-\begin{frame}[fragile]{Početno rješenje}
+\begin{frame}[fragile]{Izgradnja Hamiltonovog ciklusa}
 \begin{lstlisting}
-dok ima nereazvrstanih korisnika X:
-  za svako skladiste Y:
-    za svakog korisnika Z u skladistu Y:	
-		
-      cijena = udaljenost(X, Z) + udaljenost(X, Y)
-			
-      ako je skladiste Y prazno:
-        cijena += cijena otvaranja skladista Y
-		
-      ako je  cijena najmanja do sad:
-        W = Y
-	
-      stavi korisnika X u skladiste W
+dodaj skladiste u ciklus
+prethodni cvor = skladiste
+dok vozilo ima kapacitet i postoji korisnik:
+  trenutni cvor = najblizi(prethodni cvor)  
+  ako trenutni cvor ima preveliki trosak i postoji drugi cvor:
+    trenutni cvor = pronadi drugi(prethodni cvor)
+  inace:
+    gotovo
+  dodaj trenutni cvor u ciklus
+  oduzmi kapacitet
+  prethodni cvor = trenutni cvor
+  
+  
 \end{lstlisting}
 \end{frame}
 
-\begin{frame}[fragile]{Mutacija}
+\begin{frame}[fragile]{Izgradnja rješenja}
 \begin{lstlisting}
-ponovi ITERACIJA broj puta:
-  za svako rjesenje R iz populacije:
-    slucajno odaberi skladiste X
-    slucajno odaberi skladiste Y
-    slucajno odaberi korisnika A iz skladista X
-		
-    ako prebacivanje A iz X u Y narusava ogranicenja:
-      ponovi odabir skladista i korisinka
-    inace:
-      prebaci korisnika A iz X u Y
-      spremi izmjenjeno rjesenje
-\end{lstlisting}
-\end{frame}
+dok ima vozila ili korisnika:
+  za svako dostupno skladiste:
+    ako ima vozila u skladistu:
+      izgradi ciklus
+    ako je ciklus najkraci:
+      zapamti najkraci ciklus
 
-\begin{frame}[fragile]{Lokalna pretraga}
-\begin{lstlisting}
-dodaj rjesenje X u red Q
+  spremi najkraci ciklus u rjesenje
+  osvjezi neposluzene korisnike
+  oduzmi vozilo iz skladista
 
-ponovi LIMIT broj puta ili dok ne konvergira:
-  rjesenje R = prvo rjesenje iz reda Q
-  za svaki par korisnika (A, B):
-    ako zamjenom skladista korisnika A i B u R ne narusavao ogranicenja:
-      R` = zamjeni skladista korisnika A i B
-      
-      ako je R` bolje od X:
-        X = R`
-      
-      ako je trenutno R` bolje R:
-        dodaj R` u Q
-\end{lstlisting}
-\end{frame}
+ako ima neposluzenih korisnika:
+  rjesenje nije pronadeno
+inace
+  vrati rjesenje
 
-\begin{frame}[fragile]{Fitness}
-\begin{lstlisting}
-fitness = 0
-za svako skladiste X:
-  ako ima korisnika u X:
-    fitness += cijena otvaranja skladista X
-    
-    pohlepnim algoritmom napravi potrebne rute R[] za sve korisnike iz X
-    za svaku rutu R`:
-      grubom silom izracunaj najkraci Hamiltonov ciklus, C
-      cijena += obilazak ciklusa C
-      cijena += cijena automobila * broj ruta
-      
-\end{lstlisting}
-\end{frame}
-
-\begin{frame}[fragile]{Rješenje}
-\begin{lstlisting}
-A = pocetno rjesenje
-P = niz od POPULACIJA kopija od A
-
-ponovi ITERACIJA broj puta:
-  za svako rjesenje R iz P:
-    mutiraj(R)
-
-za svako rjesenjeR  iz P:
-  lokalna_pretraga(R)
-	
-izdvoji najbolje rjesenje iz P
 \end{lstlisting}
 \end{frame}
 
 \section{Ostvareno rješenje}
 \begin{frame}{Ostvareno rješenje}
 
-Najbolje ostvareno rješenje iznosi 315983.
+Najbolje ostvareno rješenje iznosi 285727.
 
 \end{frame}
 
