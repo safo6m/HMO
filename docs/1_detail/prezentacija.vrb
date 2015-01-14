@@ -1,0 +1,14 @@
+\frametitle{Fitness}
+\begin{lstlisting}
+fitness = 0
+za svako skladiste X:
+  ako ima korisnika u X:
+    fitness += cijena otvaranja skladista X
+
+    R[] = closest_fit(X)
+    za svaku rutu R` iz R:
+      C = tour(R`)
+      cijena += tour_cost(C)
+      cijena += cijena automobila * broj ruta
+
+\end{lstlisting}

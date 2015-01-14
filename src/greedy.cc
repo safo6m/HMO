@@ -3,11 +3,13 @@
 #include <vector>
 #include <cstdlib>
 #include <ctime>
+#include <queue>
+#include <algorithm>
 
 using namespace std;
 
-const int POPULATION = 100;
-const int ITERATION  = 10000;
+const int POPULATION = 10;
+const int ITERATION  = 1000;
 
 inline int Rand(int lo, int hi) {
 	return (rand() % (hi - lo + 1)) + lo;
@@ -417,8 +419,10 @@ vector< vector<user_t> > arrange_users_fitness(
 }
 
 int fitness(vector< vector<user_t> > sol,
-        const vector<warehouse_t> warehouses, int num_warehouse,
-        int vehicle_capacity, int vehicle_cost) {
+        const vector<warehouse_t> warehouses,
+        int num_warehouse,
+        int vehicle_capacity,
+        int vehicle_cost) {
 
     int fitness = 0;
 
@@ -480,6 +484,95 @@ vector< vector<user_t> > mutation(const vector< vector<user_t> > &x,
     }
 
     return mut;
+}
+
+
+vector< vector<user_t> > local_search(const vector< vector<user_t> > &x,
+        const vector<warehouse_t> &warehouses,
+        int num_warehouse,
+        const vector<user_t> &users,
+        int num_user,
+        int vehicle_capacity,
+        int vehicle_cost,
+        int limit = -1) {
+
+    int fit = fitness(x,
+            warehouses,
+            num_warehouse,
+            vehicle_capacity,
+            vehicle_cost);
+
+    int best_fit = fit;
+    int curr_fit;
+
+    vector< vector<user_t> > sol = x, curr;
+    queue< pair<int, vector< vector<user_t> > > > q;
+
+    for (q.push(make_pair(fit, sol)); !q.empty(); q.pop()) {
+        curr = q.front().second;
+        curr_fit = q.front().first;
+
+        fprintf(stderr, ".");
+
+        for (int i = 0; i < num_user; ++i) {
+            for (int j = i + 1; j < num_user; ++j) {
+                vector< vector<user_t> > temp(num_warehouse);
+
+                /* swap */
+                for (int k = 0; k < num_warehouse; ++k) {
+                    for (auto it = curr[k].begin(); it != curr[k].end(); ++it) {
+                        if (it->id == i) {
+                            temp[k].push_back(users[j]);
+                        } else if (it->id == j) {
+                            temp[k].push_back(users[i]);
+                        } else {
+                            temp[k].push_back(*it);
+                        }
+                    }
+                }
+
+                bool valid = true;
+                /* check if valid */
+                for (int k = 0; k < num_warehouse; ++k) {
+                    int capacity = warehouses[k].capacity;
+                    for (auto it = temp[k].begin(); it != temp[k].end(); ++it) {
+                        capacity -= users[it->id].capacity;
+                    }
+                    if (capacity < 0) {
+                        valid = false;
+                        break;
+                    }
+                }
+
+                if (!valid) continue;
+
+                /* check new fitness */
+                int temp_fit = fitness(temp,
+                        warehouses,
+                        num_warehouse,
+                        vehicle_capacity,
+                        vehicle_cost);
+
+                /* update solution */
+                if (temp_fit < best_fit) {
+                    best_fit = temp_fit;
+                    sol = temp;
+                }
+
+                /* check if better than starting */
+                if (temp_fit < curr_fit) {
+                    q.push(make_pair(temp_fit, temp));
+                }
+            }
+        }
+
+        if (limit != -1) {
+            if (limit == 0) break;
+            limit -= 1;
+        }
+    }
+
+    return sol;
 }
 
 int main(int argc, char** argv) {
@@ -586,6 +679,33 @@ int main(int argc, char** argv) {
     }
 
 	fprintf(stderr, "\n");
+
+    fprintf(stderr, "Starting local search: ");
+
+    for (int i = 0; i < POPULATION; ++i) {
+        fprintf(stderr, "\tsolution %d: ", i + 1);
+
+        vector< vector<user_t> > local = local_search(population[i].first,
+                warehouses,
+                num_warehouse,
+                users,
+                num_user,
+                vehicle_capacity,
+                vehicle_cost,
+                100);
+
+        int f_local = fitness(local,
+                warehouses,
+                num_warehouse,
+                vehicle_capacity,
+                vehicle_cost);
+
+        if (f_local < population[i].second) {
+            population[i] = make_pair(local, f_local);
+        }
+
+        fprintf(stderr, "done\n");
+    }
 
 	fprintf(stderr, "Finding best solution ...");
 

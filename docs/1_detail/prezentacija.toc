@@ -1,0 +1,7 @@
+\beamer@endinputifotherversion {3.26pt}
+\beamer@sectionintoc {1}{Projektni zadatak}{2}{0}{1}
+\beamer@sectionintoc {2}{Rje\IeC {\v s}enje}{4}{0}{2}
+\beamer@subsectionintoc {2}{1}{Genetski algoritam}{5}{0}{2}
+\beamer@subsectionintoc {2}{2}{Pohlepni algoritam}{13}{0}{2}
+\beamer@sectionintoc {3}{Rezultati}{21}{0}{3}
+\beamer@sectionintoc {4}{Zaklju\IeC {\v c}ak}{22}{0}{4}

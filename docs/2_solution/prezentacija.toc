@@ -1,0 +1,5 @@
+\beamer@endinputifotherversion {3.26pt}
+\beamer@sectionintoc {1}{Uvod}{2}{0}{1}
+\beamer@sectionintoc {2}{Opis algoritma}{3}{0}{2}
+\beamer@sectionintoc {3}{Pseudokod}{6}{0}{3}
+\beamer@sectionintoc {4}{Ostvareno rje\IeC {\v s}enje}{11}{0}{4}

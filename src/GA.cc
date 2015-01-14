@@ -199,7 +199,7 @@ int GA::run() {
 
 		for (int j = 0; j < (int)tours.size(); ++j) {
 			printf("%d: ", warehouse_id);
-			vector<User> tour = bitonic_tour(tours[j], this->warehouses[warehouse_id]);
+			vector<User> tour = bitonic_tour_brute(tours[j], this->warehouses[warehouse_id]);
 
 			int start = 0;
 			while (tour[start].getID() != -1) {
@@ -404,7 +404,7 @@ void GA::Jedinka::updateFitness(const vector<Warehouse> &w, int capacity, int co
 			vector<vector<User> > tours = dist_fit(skladiste[i], capacity);
 
 			for (int j = 0; j < (int)tours.size(); ++j) {
-				vector<User> tour = bitonic_tour(tours[j], w[i]);
+				vector<User> tour = bitonic_tour_brute(tours[j], w[i]);
 				res += cost;
 				res += bitonic_tour_cost(tour);
 			}

@@ -1,0 +1,14 @@
+\frametitle{Rješenje}
+\begin{lstlisting}
+A = pocetno rjesenje
+P = niz od POPULACIJA kopija od A
+
+ponovi ITERACIJA broj puta:
+  za svako rjesenje R iz P:
+    mutiraj(R)
+
+za svako rjesenjeR  iz P:
+  lokalna_pretraga(R)
+
+izdvoji najbolje rjesenje iz P
+\end{lstlisting}
